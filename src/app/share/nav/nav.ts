@@ -1,7 +1,19 @@
 import { KeyValuePipe } from '@angular/common';
-import { Component, effect, ElementRef, inject, signal, untracked, viewChild } from '@angular/core';
-import { Viewport } from '../../service/viewport/viewport';
+import {
+  Component,
+  computed,
+  effect,
+  ElementRef,
+  inject,
+  signal,
+  untracked,
+  viewChild,
+} from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+
+import { Auth } from '../../service/auth/auth';
+import type { AuthUser } from '../../service/auth/auth.model';
+import { Viewport } from '../../service/viewport/viewport';
 
 @Component({
   imports: [KeyValuePipe, RouterLink, RouterLinkActive],
@@ -13,6 +25,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   },
 })
 export class Nav {
+  readonly auth = inject(Auth);
   protected readonly isMobile = inject(Viewport).isMobile;
   protected readonly menuOpen = signal(false);
   protected readonly expandedGroup = signal<string | null>('announcement_board');
@@ -29,6 +42,8 @@ export class Nav {
   protected toggleGroup(key: string): void {
     this.expandedGroup.update(current => current === key ? null : key);
   }
+
+  protected user = computed<AuthUser | null>(() => this.auth.currentUser());
 
   protected openMenu(): void {
     this.menuOpen.set(true);
