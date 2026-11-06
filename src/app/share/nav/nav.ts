@@ -1,5 +1,6 @@
 import { KeyValuePipe } from '@angular/common';
-import { Component, ElementRef, signal, viewChild } from '@angular/core';
+import { Component, effect, ElementRef, inject, signal, untracked, viewChild } from '@angular/core';
+import { Viewport } from '../../service/viewport/viewport';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
@@ -8,16 +9,22 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   styleUrl: './nav.scss',
   templateUrl: './nav.html',
   host: {
-    '(window:resize)': 'onResize()',
     '(document:keydown.escape)': 'closeMenu()',
   },
 })
 export class Nav {
-  protected readonly isMobile = signal(window.innerWidth < 768);
+  protected readonly isMobile = inject(Viewport).isMobile;
   protected readonly menuOpen = signal(false);
   protected readonly expandedGroup = signal<string | null>('announcement_board');
   private readonly sidebar = viewChild<ElementRef<HTMLElement>>('sidebar');
   private readonly menuToggle = viewChild<ElementRef<HTMLButtonElement>>('menuToggle');
+
+  constructor() {
+    effect(() => {
+      this.isMobile();
+      untracked(() => this.closeMenu());
+    });
+  }
 
   protected toggleGroup(key: string): void {
     this.expandedGroup.update(current => current === key ? null : key);
@@ -40,13 +47,6 @@ export class Nav {
         if (!this.menuOpen() && this.isMobile()) this.menuToggle()?.nativeElement.focus();
       });
     }
-  }
-
-  protected onResize(): void {
-    const mobile = window.innerWidth < 768;
-    if (mobile === this.isMobile()) return;
-    this.isMobile.set(mobile);
-    this.closeMenu();
   }
 
   protected onMenuKeydown(event: KeyboardEvent): void {

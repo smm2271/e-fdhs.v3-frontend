@@ -34,6 +34,32 @@ describe('Nav', () => {
     expect(root.querySelectorAll('.nav-group-label[aria-expanded="true"]').length).toBe(0);
   });
 
+  it('closes the drawer only when crossing the mobile breakpoint', () => {
+    const originalWidth = window.innerWidth;
+    const resize = (width: number) => {
+      Object.defineProperty(window, 'innerWidth', { configurable: true, value: width });
+      window.dispatchEvent(new Event('resize'));
+      fixture.detectChanges();
+    };
+    try {
+      resize(390);
+      const root = fixture.nativeElement as HTMLElement;
+      root.querySelector<HTMLButtonElement>('.menu-toggle')!.click();
+      fixture.detectChanges();
+
+      resize(500);
+      expect(root.querySelector('.sidebar')!.classList.contains('is-open')).toBe(true);
+
+      resize(768);
+      expect(root.querySelector('.sidebar')!.classList.contains('is-open')).toBe(false);
+
+      resize(390);
+      expect(root.querySelector('.sidebar')!.hasAttribute('inert')).toBe(true);
+    } finally {
+      resize(originalWidth);
+    }
+  });
+
   it('opens the mobile drawer and closes it with Escape or the backdrop', () => {
     const originalWidth = window.innerWidth;
     try {
