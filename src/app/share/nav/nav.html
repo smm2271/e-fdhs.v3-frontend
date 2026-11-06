@@ -1,1 +1,46 @@
-<p>nav works!</p>
+﻿<button #menuToggle class="menu-toggle" type="button" aria-label="開啟導覽選單"
+  aria-controls="navigation-sidebar" [attr.aria-expanded]="menuOpen()"
+  [hidden]="menuOpen()" (click)="openMenu()">
+  <span aria-hidden="true">☰</span>
+</button>
+
+@if (isMobile() && menuOpen()) {
+  <button class="menu-backdrop" type="button" tabindex="-1" aria-label="關閉導覽選單" (click)="closeMenu()"></button>
+}
+
+<aside #sidebar id="navigation-sidebar" class="sidebar" [class.is-open]="menuOpen()"
+  [attr.inert]="isMobile() && !menuOpen() ? '' : null"
+  [attr.role]="isMobile() && menuOpen() ? 'dialog' : null"
+  [attr.aria-modal]="isMobile() && menuOpen() ? 'true' : null"
+  aria-label="導覽選單" (keydown)="onMenuKeydown($event)">
+  <div class="sidebar-header">
+    <span class="sidebar-title">數位校園</span>
+    <button class="menu-close" type="button" aria-label="關閉導覽選單" (click)="closeMenu()">
+      <span aria-hidden="true">×</span>
+    </button>
+  </div>
+  <nav aria-label="主要導覽">
+    <ul class="nav-groups">
+      @for (group of navStructure | keyvalue: null; track group.key) {
+        <li class="nav-group" [class.is-expanded]="expandedGroup() === group.key">
+          <button class="nav-group-label" type="button" [id]="'nav-group-' + group.key"
+            [attr.aria-expanded]="expandedGroup() === group.key"
+            [attr.aria-controls]="'nav-items-' + group.key" (click)="toggleGroup(group.key)">
+            <span>{{ group.value.label }}</span>
+            <span class="chevron" aria-hidden="true"></span>
+          </button>
+          <ul class="nav-items" [id]="'nav-items-' + group.key"
+            [attr.aria-labelledby]="'nav-group-' + group.key" [hidden]="expandedGroup() !== group.key">
+            @for (item of group.value.items; track item.link) {
+              <li>
+                <a [routerLink]="item.link" routerLinkActive="active"
+                  [routerLinkActiveOptions]="{ exact: true }" ariaCurrentWhenActive="page"
+                  (click)="closeMenu()">{{ item.label }}</a>
+              </li>
+            }
+          </ul>
+        </li>
+      }
+    </ul>
+  </nav>
+</aside>

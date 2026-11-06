@@ -1,0 +1,9 @@
+:host {
+  display: flex;
+  min-height: 100dvh;
+}
+
+main {
+  flex: 1;
+  min-width: 0;
+}
