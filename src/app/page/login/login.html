@@ -3,7 +3,7 @@
         <!-- 左右雙欄結構 -->
         @if (!isMobile()){
         <div class="left-column">
-            <img src="{{randomImage.url}}" alt="School Photo" class="school-photo", [style.--bg-position]="randomImage.position">
+            <img src="{{randomImage.url}}" alt="School Photo" class="school-photo" [style.--bg-position]="randomImage.position">
             <div class="info-section">
                 <div class="logo">
                     <img src="images/mark.gif">
@@ -14,7 +14,7 @@
         </div>
         }
         <div class="right-column">
-            <div class="login-form">
+            <form class="login-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
                 @if (isMobile()) {
                     <img src="images/mark.gif">
                     <h1>復旦高中 數位校園</h1>
@@ -24,14 +24,17 @@
                 <p>請輸入您的帳號與密碼</p>
                 <div class="input-area">
                     <div class="form-group">
-                        <input type="text" id="username" formControlName="username" required autofocus placeholder="請輸入帳號">
+                        <input type="text" id="username" formControlName="email" autocomplete="username" aria-label="帳號" required autofocus placeholder="請輸入帳號">
                     </div>
                     <div class="form-group">
-                        <input type="password" id="password" formControlName="password" required placeholder="請輸入密碼">
+                        <input type="password" id="password" formControlName="password" autocomplete="current-password" aria-label="密碼" required placeholder="請輸入密碼">
                     </div>
                 </div>
+                @if (errorMessage()) {
+                    <p class="error-message" role="alert">{{ errorMessage() }}</p>
+                }
                 <button type="submit">登入系統</button>
-            </div>
+            </form>
         </div>
     </div>
 </div>
