@@ -13,4 +13,12 @@ export const MOCK_AUTH_ACCOUNTS: ReadonlyArray<{
     },
     password: '123456',
   },
+  {
+    user: {
+      id: '2',
+      name: '測試使用者2',
+      email: 'demo2',
+    },
+    password: '114514',
+  }
 ];
