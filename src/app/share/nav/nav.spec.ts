@@ -37,6 +37,33 @@ describe('Nav', () => {
     expect(fixture.nativeElement.querySelector('nav')).toBeNull();
   });
 
+  it('logs out from the mobile drawer and returns to login', async () => {
+    const originalWidth = window.innerWidth;
+    try {
+      Object.defineProperty(window, 'innerWidth', { configurable: true, value: 390 });
+      window.dispatchEvent(new Event('resize'));
+      fixture.detectChanges();
+      const router = TestBed.inject(Router);
+      await router.navigate(['/home']);
+      const root = fixture.nativeElement as HTMLElement;
+      root.querySelector<HTMLButtonElement>('.menu-toggle')!.click();
+      fixture.detectChanges();
+      root.querySelector<HTMLButtonElement>('.logout-button')!.click();
+      await fixture.whenStable();
+
+      expect(TestBed.inject(Auth).currentUser()).toBeNull();
+      expect(router.url).toBe('/login');
+      expect(root.querySelector('.nav-container')).toBeNull();
+
+      TestBed.inject(Auth).login({ email: 'demo@example.com', password: '123456' });
+      await fixture.whenStable();
+      expect(root.querySelector('.sidebar')!.classList.contains('is-open')).toBe(false);
+    } finally {
+      Object.defineProperty(window, 'innerWidth', { configurable: true, value: originalWidth });
+      window.dispatchEvent(new Event('resize'));
+    }
+  });
+
   it('disables all unfinished items and keeps home navigable', async () => {
     const root = fixture.nativeElement as HTMLElement;
     const disabled = root.querySelectorAll<HTMLElement>('.nav-disabled');

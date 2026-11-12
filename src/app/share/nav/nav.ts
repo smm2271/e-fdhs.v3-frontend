@@ -9,7 +9,7 @@ import {
   untracked,
   viewChild,
 } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
 import { HOME_LINK, NAV_GROUPS } from './nav.model';
 import { Auth } from '../../service/auth/auth';
@@ -27,6 +27,7 @@ import { Viewport } from '../../service/viewport/viewport';
 })
 export class Nav {
   readonly auth = inject(Auth);
+  private readonly router = inject(Router);
   protected readonly isMobile = inject(Viewport).isMobile;
   protected readonly menuOpen = signal(false);
   protected readonly expandedGroup = signal<string | null>('announcement_board');
@@ -45,6 +46,12 @@ export class Nav {
   }
 
   protected user = computed<AuthUser | null>(() => this.auth.currentUser());
+
+  protected logout(): void {
+    this.closeMenu();
+    this.auth.logout();
+    void this.router.navigate(['/login']);
+  }
 
   protected openMenu(): void {
     this.menuOpen.set(true);
