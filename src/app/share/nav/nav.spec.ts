@@ -48,6 +48,22 @@ describe('Nav', () => {
       const root = fixture.nativeElement as HTMLElement;
       root.querySelector<HTMLButtonElement>('.menu-toggle')!.click();
       fixture.detectChanges();
+      const userGroup = root.querySelector<HTMLButtonElement>('#nav-group-user')!;
+      const userActions = root.querySelector<HTMLElement>('#user-actions')!;
+      expect(userActions.hidden).toBe(true);
+      userGroup.click();
+      fixture.detectChanges();
+      expect(userActions.hidden).toBe(false);
+      expect(root.querySelectorAll('.nav-group-label[aria-expanded="true"]').length).toBe(1);
+      expect(root.querySelector<HTMLElement>('#nav-items-announcement_board')!.hidden).toBe(true);
+
+      root.querySelector<HTMLButtonElement>('#nav-group-classInfo')!.click();
+      fixture.detectChanges();
+      expect(userActions.hidden).toBe(true);
+      expect(userGroup.getAttribute('aria-expanded')).toBe('false');
+
+      userGroup.click();
+      fixture.detectChanges();
       root.querySelector<HTMLButtonElement>('.logout-button')!.click();
       await fixture.whenStable();
 
