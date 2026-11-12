@@ -1,4 +1,4 @@
-﻿@if (!user()?.id == null) {
+﻿@if (user()) {
   <div class="nav-container">
     <button #menuToggle class="menu-toggle" type="button" aria-label="開啟導覽選單"
       aria-controls="navigation-sidebar" [attr.aria-expanded]="menuOpen()"
@@ -22,6 +22,11 @@
         </button>
       </div>
       <nav aria-label="主要導覽">
+        @if (homeLink.kind === 'link') {
+          <a class="home-link" [routerLink]="homeLink.link" routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }" ariaCurrentWhenActive="page"
+            (click)="closeMenu()">{{ homeLink.label }}</a>
+        }
         <ul class="nav-groups">
           @for (group of navStructure | keyvalue: null; track group.key) {
             <li class="nav-group" [class.is-expanded]="expandedGroup() === group.key">
@@ -33,11 +38,17 @@
               </button>
               <ul class="nav-items" [id]="'nav-items-' + group.key"
                 [attr.aria-labelledby]="'nav-group-' + group.key" [hidden]="expandedGroup() !== group.key">
-                @for (item of group.value.items; track item.link) {
+                @for (item of group.value.items; track item.label) {
                   <li>
-                    <a [routerLink]="item.link" routerLinkActive="active"
-                      [routerLinkActiveOptions]="{ exact: true }" ariaCurrentWhenActive="page"
-                      (click)="closeMenu()">{{ item.label }}</a>
+                    @if (item.kind === 'link') {
+                      <a [routerLink]="item.link" routerLinkActive="active"
+                        [routerLinkActiveOptions]="{ exact: true }" ariaCurrentWhenActive="page"
+                        (click)="closeMenu()">{{ item.label }}</a>
+                    } @else {
+                      <span class="nav-disabled" aria-disabled="true">
+                        <span>{{ item.label }}</span><span class="status">尚未開放</span>
+                      </span>
+                    }
                   </li>
                 }
               </ul>

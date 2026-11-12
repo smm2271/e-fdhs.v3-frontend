@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
+import { routes } from '../../app.routes';
+import { Auth } from '../../service/auth/auth';
 import { Nav } from './nav';
 
 describe('Nav', () => {
@@ -9,9 +11,10 @@ describe('Nav', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [Nav],
-      providers: [provideRouter([])],
+      providers: [provideRouter(routes)],
     }).compileComponents();
 
+    TestBed.inject(Auth).login({ email: 'demo@example.com', password: '123456' });
     fixture = TestBed.createComponent(Nav);
     component = fixture.componentInstance;
     await fixture.whenStable();
@@ -19,6 +22,36 @@ describe('Nav', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('reacts to login and logout', async () => {
+    const auth = TestBed.inject(Auth);
+    auth.logout();
+    await fixture.whenStable();
+    expect(fixture.nativeElement.querySelector('nav')).toBeNull();
+    auth.login({ email: 'demo@example.com', password: '123456' });
+    await fixture.whenStable();
+    expect(fixture.nativeElement.querySelector('nav')).not.toBeNull();
+    auth.logout();
+    await fixture.whenStable();
+    expect(fixture.nativeElement.querySelector('nav')).toBeNull();
+  });
+
+  it('disables all unfinished items and keeps home navigable', async () => {
+    const root = fixture.nativeElement as HTMLElement;
+    const disabled = root.querySelectorAll<HTMLElement>('.nav-disabled');
+    expect(disabled.length).toBe(10);
+    for (const item of disabled) {
+      expect(item.getAttribute('aria-disabled')).toBe('true');
+      expect(item.hasAttribute('href')).toBe(false);
+      expect(item.querySelector('a, button, [tabindex]')).toBeNull();
+      expect(item.textContent).toContain('尚未開放');
+    }
+    expect(root.querySelectorAll('a').length).toBe(1);
+    root.querySelector<HTMLAnchorElement>('.home-link')!.click();
+    await fixture.whenStable();
+    expect(TestBed.inject(Router).url).toBe('/home');
+    expect(root.querySelector('.home-link')?.getAttribute('aria-current')).toBe('page');
   });
 
   it('expands only one category and allows it to collapse', () => {

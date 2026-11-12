@@ -11,6 +11,7 @@ import {
 } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
+import { HOME_LINK, NAV_GROUPS } from './nav.model';
 import { Auth } from '../../service/auth/auth';
 import type { AuthUser } from '../../service/auth/auth.model';
 import { Viewport } from '../../service/viewport/viewport';
@@ -79,41 +80,6 @@ export class Nav {
       first?.focus();
     }
   }
-  protected navStructure = {
-    announcement_board: {
-      label: '首頁公布欄',
-      items: [
-        { label: '公布欄', link: '/list-announcement' }
-      ]
-    },
-    classInfo: {
-      label: '班級資訊',
-      items: [
-        { label: '生活榮譽競賽', link: '/honor' },
-        { label: '勤學紀錄', link: '/studied-record' }
-      ]
-    },
-    adminOnly: {
-      label: '幹部專用',
-      items: [
-        { label: '班級密碼', link: '/home' }
-      ]
-    },
-    announcement: {
-      label: '校內廣播',
-      items: [
-        { label: '廣播列表', link: '/list-announcement' },
-        { label: '本週稽核', link: '/weekly-audit' },
-        { label: '上週稽核', link: '/last-week-audit' },
-        { label: '上週廣播查詢', link: '/last-week-announcement' }
-      ]
-    },
-    help_me: {
-      label: '線上報修',
-      items: [
-        { label: '總務處報修', link: '/general-affairs' },
-        { label: '電腦中心報修', link: '/computer-center' }
-      ]
-    }
-  }
+  protected readonly navStructure = NAV_GROUPS;
+  protected readonly homeLink = HOME_LINK;
 }

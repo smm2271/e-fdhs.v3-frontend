@@ -1,0 +1,28 @@
+<header>
+  <h1>首頁</h1>
+  <p>歡迎回來，{{ user()?.name }}。</p>
+</header>
+<section aria-labelledby="features-title">
+  <h2 id="features-title">功能入口</h2>
+  <p>各項功能建置中，開放後即可使用。</p>
+  <div class="feature-groups">
+    @for (group of groups | keyvalue: null; track group.key) {
+      <section class="feature-group" [attr.aria-labelledby]="'feature-' + group.key">
+        <h3 [id]="'feature-' + group.key">{{ group.value.label }}</h3>
+        <ul>
+          @for (item of group.value.items; track item.label) {
+            <li>
+              @if (item.kind === 'link') {
+                <a [routerLink]="item.link">{{ item.label }}</a>
+              } @else {
+                <span class="feature-disabled" aria-disabled="true">
+                  <span>{{ item.label }}</span><span class="status">尚未開放</span>
+                </span>
+              }
+            </li>
+          }
+        </ul>
+      </section>
+    }
+  </div>
+</section>

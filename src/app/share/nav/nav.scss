@@ -72,7 +72,7 @@ button:focus-visible, a:focus-visible {
   padding-left: 12px;
   border-left: 2px solid #dce4ef;
 }
-.nav-items a {
+.nav-items a, .home-link, .nav-disabled {
   display: flex;
   align-items: center;
   min-height: 44px;
@@ -83,7 +83,10 @@ button:focus-visible, a:focus-visible {
   text-decoration: none;
   overflow-wrap: anywhere;
 }
-.nav-items a.active { background: #e4edff; color: #1e40af; font-weight: 700; }
+.home-link { margin-bottom: 8px; }
+.nav-disabled { flex-wrap: wrap; gap: 4px 8px; }
+.status { font-size: 0.8125rem; }
+.nav-items a.active, .home-link.active { background: #e4edff; color: #1e40af; font-weight: 700; }
 .menu-toggle, .menu-close, .menu-backdrop { display: none; }
 
 @media (hover: hover) {

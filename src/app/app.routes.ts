@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { Login } from './page/login/login';
+import { Home } from './page/home/home';
 import { authGuard } from './service/auth/auth.guard';
 
 export const routes: Routes = [
@@ -8,7 +9,6 @@ export const routes: Routes = [
   {
     path: 'home',
     canActivate: [authGuard],
-    // TODO: 首頁建立後，以 component 或 loadComponent 替換 children。
-    children: [],
+    component: Home,
   },
 ];

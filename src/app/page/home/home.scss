@@ -1,0 +1,23 @@
+:host {
+  display: block;
+  padding: clamp(24px, 4vw, 48px);
+  padding-bottom: 100px;
+  color: #243449;
+  line-height: 1.6;
+}
+h1 { font-size: 2rem; font-weight: 700; }
+h2 { font-size: 1.375rem; font-weight: 700; }
+h3 { margin-bottom: 12px; font-size: 1.125rem; font-weight: 600; }
+header { margin-bottom: 32px; }
+p { margin-top: 8px; color: #475569; }
+.feature-groups {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+.feature-group { padding: 20px; border: 1px solid #dce4ef; border-radius: 12px; background: #f8fafc; }
+li + li { margin-top: 12px; }
+.feature-disabled { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+.status { color: #475569; font-size: 0.875rem; }
+a { color: #1e40af; }
