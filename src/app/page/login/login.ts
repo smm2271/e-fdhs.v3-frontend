@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Auth } from '../../service/auth/auth';
+import { getLoginDestination } from '../../service/auth/auth.redirect';
 import { Viewport } from '../../service/viewport/viewport';
 
 @Component({
@@ -38,7 +39,8 @@ export class Login {
 
     const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
     void this.router.navigateByUrl(
-      returnUrl?.startsWith('/') && !returnUrl.startsWith('//') ? returnUrl : '/home',
+      getLoginDestination(this.router, returnUrl),
+      { replaceUrl: true },
     );
   }
 

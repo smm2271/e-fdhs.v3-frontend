@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { routes } from '../../app.routes';
-import { Auth } from '../../service/auth/auth';
+import { Auth, AUTH_STORAGE_KEY } from '../../service/auth/auth';
 import { Nav } from './nav';
 
 describe('Nav', () => {
@@ -9,6 +9,7 @@ describe('Nav', () => {
   let fixture: ComponentFixture<Nav>;
 
   beforeEach(async () => {
+    localStorage.removeItem(AUTH_STORAGE_KEY);
     await TestBed.configureTestingModule({
       imports: [Nav],
       providers: [provideRouter(routes)],
@@ -19,6 +20,8 @@ describe('Nav', () => {
     component = fixture.componentInstance;
     await fixture.whenStable();
   });
+
+  afterEach(() => localStorage.removeItem(AUTH_STORAGE_KEY));
 
   it('should create', () => {
     expect(component).toBeTruthy();

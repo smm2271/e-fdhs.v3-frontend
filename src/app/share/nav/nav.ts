@@ -50,7 +50,7 @@ export class Nav {
   protected logout(): void {
     this.closeMenu();
     this.auth.logout();
-    void this.router.navigate(['/login']);
+    void this.router.navigate(['/login'], { replaceUrl: true });
   }
 
   protected openMenu(): void {

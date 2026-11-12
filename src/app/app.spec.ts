@@ -1,15 +1,18 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { App } from './app';
-import { Auth } from './service/auth/auth';
+import { Auth, AUTH_STORAGE_KEY } from './service/auth/auth';
 
 describe('App', () => {
   beforeEach(async () => {
+    localStorage.removeItem(AUTH_STORAGE_KEY);
     await TestBed.configureTestingModule({
       imports: [App],
       providers: [provideRouter([])],
     }).compileComponents();
   });
+
+  afterEach(() => localStorage.removeItem(AUTH_STORAGE_KEY));
 
   it('should create the app', () => {
     const fixture = TestBed.createComponent(App);

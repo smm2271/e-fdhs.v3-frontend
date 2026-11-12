@@ -2,15 +2,18 @@ import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { App } from './app';
 import { routes } from './app.routes';
-import { Auth } from './service/auth/auth';
+import { Auth, AUTH_STORAGE_KEY } from './service/auth/auth';
 
 describe('Application routing', () => {
   beforeEach(async () => {
+    localStorage.removeItem(AUTH_STORAGE_KEY);
     await TestBed.configureTestingModule({
       imports: [App],
       providers: [provideRouter(routes)],
     }).compileComponents();
   });
+
+  afterEach(() => localStorage.removeItem(AUTH_STORAGE_KEY));
 
   it('renders the protected home through the default redirect', async () => {
     TestBed.inject(Auth).login({ email: 'demo@example.com', password: '123456' });

@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, provideRouter, Router } from '@angular/router';
-import { Auth } from '../../service/auth/auth';
+import { Auth, AUTH_STORAGE_KEY } from '../../service/auth/auth';
 import { Login } from './login';
 
 describe('Login', () => {
@@ -8,6 +8,7 @@ describe('Login', () => {
   let fixture: ComponentFixture<Login>;
 
   beforeEach(async () => {
+    localStorage.removeItem(AUTH_STORAGE_KEY);
     await TestBed.configureTestingModule({
       imports: [Login],
       providers: [provideRouter([])],
@@ -17,6 +18,8 @@ describe('Login', () => {
     component = fixture.componentInstance;
     await fixture.whenStable();
   });
+
+  afterEach(() => localStorage.removeItem(AUTH_STORAGE_KEY));
 
   it('should create', () => {
     expect(component).toBeTruthy();
@@ -39,7 +42,7 @@ describe('Login', () => {
     await submit('demo@example.com', '123456');
 
     expect(TestBed.inject(Auth).isAuthenticated()).toBe(true);
-    expect(navigate).toHaveBeenCalledWith('/home');
+    expect(navigate).toHaveBeenCalledWith('/home', { replaceUrl: true });
   });
 
   it('should display an error and stay on login for invalid credentials', async () => {
@@ -59,7 +62,7 @@ describe('Login', () => {
 
     await submit('demo@example.com', '123456');
 
-    expect(navigate).toHaveBeenCalledWith('/home?tab=profile');
+    expect(navigate).toHaveBeenCalledWith('/home?tab=profile', { replaceUrl: true });
   });
 
   it('should require both fields before attempting authentication', async () => {
@@ -70,4 +73,15 @@ describe('Login', () => {
     expect(login).not.toHaveBeenCalled();
     expect(fixture.nativeElement.querySelector('[role="alert"]').textContent).toContain('請輸入帳號與密碼');
   });
+
+  it.each(['/login?returnUrl=/login', '//example.com', 'https://example.com'])
+    ('uses home instead of an invalid return URL: %s', async (returnUrl) => {
+      vi.spyOn(TestBed.inject(ActivatedRoute).snapshot, 'queryParamMap', 'get')
+        .mockReturnValue(convertToParamMap({ returnUrl }));
+      const navigate = vi.spyOn(TestBed.inject(Router), 'navigateByUrl').mockResolvedValue(true);
+
+      await submit('demo@example.com', '123456');
+
+      expect(navigate).toHaveBeenCalledWith('/home', { replaceUrl: true });
+    });
 });
