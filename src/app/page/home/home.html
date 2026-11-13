@@ -6,7 +6,7 @@
   <h2 id="features-title">功能入口</h2>
   <p>各項功能建置中，開放後即可使用。</p>
   <div class="feature-groups">
-    @for (group of groups | keyvalue: null; track group.key) {
+    @for (group of groups() | keyvalue: null; track group.key) {
       <section class="feature-group" [attr.aria-labelledby]="'feature-' + group.key">
         <h3 [id]="'feature-' + group.key">{{ group.value.label }}</h3>
         <ul>

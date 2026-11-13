@@ -27,6 +27,7 @@ describe('Auth', () => {
       id: '1',
       name: '測試使用者',
       email: 'demo@example.com',
+      groupIds: ['student'],
     });
     expect(service.isAuthenticated()).toBe(true);
     expect(localStorage.getItem(AUTH_STORAGE_KEY)).toBe('1');

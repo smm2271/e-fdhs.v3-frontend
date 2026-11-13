@@ -23,7 +23,7 @@ export class Auth {
       return false;
     }
 
-    this.userState.set({ ...account.user });
+    this.userState.set({ ...account.user, groupIds: [...account.user.groupIds] });
     try {
       localStorage.setItem(AUTH_STORAGE_KEY, account.user.id);
     } catch {
@@ -47,7 +47,7 @@ export class Auth {
       const userId = localStorage.getItem(AUTH_STORAGE_KEY);
       if (!userId) return null;
       const account = MOCK_AUTH_ACCOUNTS.find(account => account.user.id === userId);
-      if (account) return { ...account.user };
+      if (account) return { ...account.user, groupIds: [...account.user.groupIds] };
       localStorage.removeItem(AUTH_STORAGE_KEY);
     } catch {
       // 無法讀取或還原時，讓 guard 導向登入頁。

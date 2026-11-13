@@ -19,16 +19,22 @@ export const PAGE_DEFINITIONS = {
     kind: 'link', label: '首頁', path: 'home', access: 'authenticated',
     loadComponent: () => import('../../page/home/home').then(module => module.Home),
   },
-  board: { kind: 'disabled', label: '公布欄', group: 'announcement_board' },
-  honor: { kind: 'disabled', label: '生活榮譽競賽', group: 'classInfo' },
-  attendance: { kind: 'disabled', label: '勤學紀錄', group: 'classInfo' },
-  classPassword: { kind: 'disabled', label: '班級密碼', group: 'adminOnly' },
-  broadcasts: { kind: 'disabled', label: '廣播列表', group: 'announcement' },
-  currentAudit: { kind: 'disabled', label: '本週稽核', group: 'announcement' },
-  previousAudit: { kind: 'disabled', label: '上週稽核', group: 'announcement' },
-  previousBroadcasts: { kind: 'disabled', label: '上週廣播查詢', group: 'announcement' },
-  generalRepair: { kind: 'disabled', label: '總務處報修', group: 'help_me' },
-  computerRepair: { kind: 'disabled', label: '電腦中心報修', group: 'help_me' },
+  notFound: {
+    kind: 'link', label: '404 error', path: '404', access: 'authenticated',
+    loadComponent: () => import('../../page/not-found/not-found').then(module => module.NotFound),
+  },
+  board: { kind: 'disabled', label: '公布欄', group: 'announcement_board', policy: { anyPermissions: ['board.read'] } },
+  honor: { kind: 'disabled', label: '生活榮譽競賽', group: 'classInfo', policy: { anyPermissions: ['class.honor.read'] } },
+  attendance: { kind: 'disabled', label: '勤學紀錄', group: 'classInfo', policy: { anyPermissions: ['class.attendance.read'] } },
+  classPassword: { kind: 'disabled', label: '班級密碼', group: 'adminOnly', policy: {
+    allowedGroupIds: ['classOfficer', 'staff', 'admin'], anyPermissions: ['class.password.read'],
+  } },
+  broadcasts: { kind: 'disabled', label: '廣播列表', group: 'announcement', policy: { anyPermissions: ['broadcast.read'] } },
+  currentAudit: { kind: 'disabled', label: '本週稽核', group: 'announcement', policy: { anyPermissions: ['broadcast.audit.read'] } },
+  previousAudit: { kind: 'disabled', label: '上週稽核', group: 'announcement', policy: { anyPermissions: ['broadcast.audit.read'] } },
+  previousBroadcasts: { kind: 'disabled', label: '上週廣播查詢', group: 'announcement', policy: { anyPermissions: ['broadcast.read'] } },
+  generalRepair: { kind: 'disabled', label: '總務處報修', group: 'help_me', policy: { anyPermissions: ['repair.general.create'] } },
+  computerRepair: { kind: 'disabled', label: '電腦中心報修', group: 'help_me', policy: { anyPermissions: ['repair.computer.create'] } },
 } as const satisfies Record<string, PageDefinition & { readonly group?: keyof typeof PAGE_GROUPS }>;
 
 export type PageId = keyof typeof PAGE_DEFINITIONS;
@@ -36,4 +42,5 @@ export type PageId = keyof typeof PAGE_DEFINITIONS;
 export const PAGE_URLS = {
   home: '/' + PAGE_DEFINITIONS.home.path,
   login: '/' + PAGE_DEFINITIONS.login.path,
+  notFound: '/' + PAGE_DEFINITIONS.notFound.path,
 } as const;

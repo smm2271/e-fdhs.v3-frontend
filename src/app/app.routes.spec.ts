@@ -24,7 +24,7 @@ describe('Application routing', () => {
     expect(TestBed.inject(Router).url).toBe('/home');
     expect(root.querySelector('app-home h1')?.textContent).toBe('首頁');
     expect(root.querySelector('app-home header')?.textContent).toContain('測試使用者');
-    expect(root.querySelectorAll('app-home [aria-disabled="true"]').length).toBe(10);
+    expect(root.querySelectorAll('app-home [aria-disabled="true"]').length).toBe(5);
     expect(root.querySelector('app-home a, app-home button')).toBeNull();
   });
 

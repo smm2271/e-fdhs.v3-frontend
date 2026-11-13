@@ -83,6 +83,6 @@ describe('authGuard', () => {
 
     await router.navigateByUrl('/unknown');
 
-    expect(router.url).toBe(loggedIn ? '/home' : '/login?returnUrl=%2Fhome');
+    expect(router.url).toBe(loggedIn ? '/unknown' : '/login?returnUrl=%2Funknown');
   });
 });

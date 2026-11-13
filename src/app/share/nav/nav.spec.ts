@@ -165,7 +165,7 @@ describe('Nav', () => {
   it('disables all unfinished items and keeps home navigable', async () => {
     const root = fixture.nativeElement as HTMLElement;
     const disabled = root.querySelectorAll<HTMLElement>('.nav-disabled');
-    expect(disabled.length).toBe(10);
+    expect(disabled.length).toBe(5);
     for (const item of disabled) {
       expect(item.getAttribute('aria-disabled')).toBe('true');
       expect(item.hasAttribute('href')).toBe(false);

@@ -28,7 +28,7 @@
             (click)="closeMenu()">{{ homeLink.label }}</a>
         }
         <ul class="nav-groups">
-          @for (group of navStructure | keyvalue: null; track group.key) {
+          @for (group of navStructure() | keyvalue: null; track group.key) {
             <li class="nav-group" [class.is-expanded]="expandedGroup() === group.key">
               <button class="nav-group-label" type="button" [id]="'nav-group-' + group.key"
                 [attr.aria-expanded]="expandedGroup() === group.key"

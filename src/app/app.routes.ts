@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { authGuard, guestGuard } from './service/auth/auth.guard';
+import { authGuard, guestGuard, permissionGuard } from './service/auth/auth.guard';
 import { PAGE_DEFINITIONS, PAGE_URLS } from './service/page/page.config';
 
 export const routes: Routes = [
@@ -10,7 +10,11 @@ export const routes: Routes = [
       path: page.path,
       title: page.label,
       loadComponent: page.loadComponent,
-      canActivate: [page.access === 'guest' ? guestGuard : authGuard],
+      data: { accessPolicy: 'policy' in page ? page.policy : undefined },
+      canActivate: page.access === 'guest' ? [guestGuard] : [authGuard, permissionGuard],
     })),
-  { path: '**', redirectTo: PAGE_URLS.home },
+  {
+    path: '**', title: PAGE_DEFINITIONS.notFound.label,
+    canActivate: [authGuard], loadComponent: PAGE_DEFINITIONS.notFound.loadComponent,
+  },
 ];

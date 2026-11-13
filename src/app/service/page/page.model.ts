@@ -1,6 +1,7 @@
 import type { Route } from '@angular/router';
+import type { AccessPolicy } from '../permission/permission.model';
 
-export type PageDefinition =
+export type PageDefinition = (
   | {
       readonly kind: 'link';
       readonly label: string;
@@ -13,7 +14,7 @@ export type PageDefinition =
       readonly kind: 'disabled';
       readonly label: string;
       readonly group: string;
-    };
+    }) & { readonly policy?: AccessPolicy };
 
 export type PageNavigationItem =
   | { readonly kind: 'link'; readonly label: string; readonly link: string }

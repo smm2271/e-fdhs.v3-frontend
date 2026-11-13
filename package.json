@@ -3,6 +3,12 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
+    "validate:permissions": "node scripts/validate-permissions.cjs",
+    "test:permissions": "node --test scripts/validate-permissions.test.cjs",
+    "pretest": "npm run validate:permissions && npm run test:permissions",
+    "prebuild": "npm run validate:permissions",
+    "prestart": "npm run validate:permissions",
+    "prewatch": "npm run validate:permissions",
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
