@@ -40,6 +40,85 @@ describe('Nav', () => {
     expect(fixture.nativeElement.querySelector('nav')).toBeNull();
   });
 
+  it('toggles the desktop user card and closes it on outside clicks or Escape', () => {
+    const originalWidth = window.innerWidth;
+    try {
+      Object.defineProperty(window, 'innerWidth', { configurable: true, value: 1280 });
+      window.dispatchEvent(new Event('resize'));
+      fixture.detectChanges();
+      const root = fixture.nativeElement as HTMLElement;
+      const toggle = root.querySelector<HTMLButtonElement>('#nav-group-user')!;
+      const actions = root.querySelector<HTMLElement>('#user-actions')!;
+      expect(actions.hidden).toBe(true);
+      toggle.click();
+      fixture.detectChanges();
+      expect(actions.hidden).toBe(false);
+      expect(toggle.getAttribute('aria-expanded')).toBe('true');
+      expect(root.querySelector('#nav-group-announcement_board')!.getAttribute('aria-expanded')).toBe('true');
+
+      root.querySelector<HTMLElement>('.user-card')!.click();
+      fixture.detectChanges();
+      expect(actions.hidden).toBe(false);
+      document.body.click();
+      fixture.detectChanges();
+      expect(actions.hidden).toBe(true);
+
+      toggle.click();
+      fixture.detectChanges();
+      toggle.click();
+      fixture.detectChanges();
+      expect(actions.hidden).toBe(true);
+      toggle.click();
+      fixture.detectChanges();
+      root.querySelector<HTMLButtonElement>('#nav-group-classInfo')!.click();
+      fixture.detectChanges();
+      expect(actions.hidden).toBe(true);
+
+      toggle.click();
+      fixture.detectChanges();
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+      fixture.detectChanges();
+      expect(actions.hidden).toBe(true);
+      expect(document.activeElement).toBe(toggle);
+
+      toggle.click();
+      fixture.detectChanges();
+      Object.defineProperty(window, 'innerWidth', { configurable: true, value: 390 });
+      window.dispatchEvent(new Event('resize'));
+      fixture.detectChanges();
+      Object.defineProperty(window, 'innerWidth', { configurable: true, value: 1280 });
+      window.dispatchEvent(new Event('resize'));
+      fixture.detectChanges();
+      expect(actions.hidden).toBe(true);
+    } finally {
+      Object.defineProperty(window, 'innerWidth', { configurable: true, value: originalWidth });
+      window.dispatchEvent(new Event('resize'));
+    }
+  });
+
+  it('logs out from the expanded desktop user card', async () => {
+    const originalWidth = window.innerWidth;
+    try {
+      Object.defineProperty(window, 'innerWidth', { configurable: true, value: 1280 });
+      window.dispatchEvent(new Event('resize'));
+      fixture.detectChanges();
+      const root = fixture.nativeElement as HTMLElement;
+      root.querySelector<HTMLButtonElement>('#nav-group-user')!.click();
+      fixture.detectChanges();
+      root.querySelector<HTMLButtonElement>('.logout-button')!.click();
+      await fixture.whenStable();
+      expect(TestBed.inject(Auth).currentUser()).toBeNull();
+      expect(TestBed.inject(Router).url).toBe('/login');
+      expect(root.querySelector('.user-card')).toBeNull();
+      TestBed.inject(Auth).login({ email: 'demo@example.com', password: '123456' });
+      await fixture.whenStable();
+      expect(root.querySelector<HTMLElement>('#user-actions')!.hidden).toBe(true);
+    } finally {
+      Object.defineProperty(window, 'innerWidth', { configurable: true, value: originalWidth });
+      window.dispatchEvent(new Event('resize'));
+    }
+  });
+
   it('logs out from the mobile drawer and returns to login', async () => {
     const originalWidth = window.innerWidth;
     try {

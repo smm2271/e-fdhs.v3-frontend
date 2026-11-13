@@ -22,7 +22,8 @@ import { Viewport } from '../../service/viewport/viewport';
   styleUrl: './nav.scss',
   templateUrl: './nav.html',
   host: {
-    '(document:keydown.escape)': 'closeMenu()',
+    '(document:keydown.escape)': 'onEscape()',
+    '(document:click)': 'onDocumentClick($event)',
   },
 })
 export class Nav {
@@ -30,14 +31,24 @@ export class Nav {
   private readonly router = inject(Router);
   protected readonly isMobile = inject(Viewport).isMobile;
   protected readonly menuOpen = signal(false);
+  protected readonly desktopUserOpen = signal(false);
   protected readonly expandedGroup = signal<string | null>('announcement_board');
+  protected readonly userExpanded = computed(() => this.isMobile()
+    ? this.expandedGroup() === 'user'
+    : this.desktopUserOpen());
+  private readonly userCard = viewChild<ElementRef<HTMLElement>>('userCard');
+  private readonly userToggle = viewChild<ElementRef<HTMLButtonElement>>('userToggle');
   private readonly sidebar = viewChild<ElementRef<HTMLElement>>('sidebar');
   private readonly menuToggle = viewChild<ElementRef<HTMLButtonElement>>('menuToggle');
 
   constructor() {
     effect(() => {
       this.isMobile();
-      untracked(() => this.closeMenu());
+      this.auth.currentUser();
+      untracked(() => {
+        this.closeMenu();
+        this.desktopUserOpen.set(false);
+      });
     });
   }
 
@@ -45,10 +56,34 @@ export class Nav {
     this.expandedGroup.update(current => current === key ? null : key);
   }
 
+  protected toggleUser(): void {
+    if (this.isMobile()) {
+      this.toggleGroup('user');
+    } else {
+      this.desktopUserOpen.update(open => !open);
+    }
+  }
+
+  protected onDocumentClick(event: MouseEvent): void {
+    const card = this.userCard()?.nativeElement;
+    if (!this.isMobile() && this.desktopUserOpen() && card && !event.composedPath().includes(card)) {
+      this.desktopUserOpen.set(false);
+    }
+  }
+
+  protected onEscape(): void {
+    if (this.desktopUserOpen()) {
+      this.desktopUserOpen.set(false);
+      this.userToggle()?.nativeElement.focus();
+    }
+    this.closeMenu();
+  }
+
   protected user = computed<AuthUser | null>(() => this.auth.currentUser());
 
   protected logout(): void {
     this.closeMenu();
+    this.desktopUserOpen.set(false);
     this.auth.logout();
     void this.router.navigate(['/login'], { replaceUrl: true });
   }

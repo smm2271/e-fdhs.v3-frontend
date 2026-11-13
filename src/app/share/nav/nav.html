@@ -56,19 +56,15 @@
           }
         </ul>
       </nav>
-      <div class="user-card" role="group" aria-label="使用者資訊"
-        [class.is-expanded]="isMobile() && expandedGroup() === 'user'">
-        @if (isMobile()) {
-          <button class="nav-group-label" id="nav-group-user" type="button"
-            [attr.aria-expanded]="expandedGroup() === 'user'" aria-controls="user-actions"
-            (click)="toggleGroup('user')">
+      <div #userCard class="user-card" role="group" aria-label="使用者資訊"
+        [class.is-expanded]="userExpanded()">
+          <button #userToggle class="user-toggle" [class.nav-group-label]="isMobile()" id="nav-group-user" type="button"
+            [attr.aria-expanded]="userExpanded()" aria-controls="user-actions"
+            (click)="toggleUser()">
             <span class="user-name">{{ user()?.name }}</span>
             <span class="chevron" aria-hidden="true"></span>
           </button>
-        } @else {
-          <span class="user-name">{{ user()?.name }}</span>
-        }
-        <div class="user-actions" id="user-actions" [hidden]="isMobile() && expandedGroup() !== 'user'">
+        <div class="user-actions" id="user-actions" role="group" aria-label="使用者操作" [hidden]="!userExpanded()">
           <button class="logout-button" type="button" (click)="logout()">登出</button>
         </div>
       </div>
