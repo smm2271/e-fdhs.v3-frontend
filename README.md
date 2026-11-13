@@ -2,12 +2,20 @@
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.0.5.
 
+## 專案文件
+
+- [Agent 開發規範](AGENTS.md)
+- [文件索引與常用指令](docs/README.md)
+- [開發架構](docs/architecture.md)
+
+完成新功能時，須在 `docs/` 新增對應文件並更新索引；修改既有功能時，須同步更新相關文件，使文件與實際功能相符。
+
 ## Development server
 
 To start a local development server, run:
 
 ```bash
-ng serve
+npm start
 ```
 
 Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
@@ -31,7 +39,7 @@ ng generate --help
 To build the project run:
 
 ```bash
-ng build
+npm run build
 ```
 
 This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
@@ -41,18 +49,12 @@ This will compile your project and store the build artifacts in the `dist/` dire
 To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
 
 ```bash
-ng test
+npm test -- --watch=false
 ```
 
 ## Running end-to-end tests
 
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+專案目前沒有設定端到端測試框架。執行 UI 驗證時，請依任務檢查桌面、手機及鍵盤操作，並回報實際檢查範圍。
 
 ## Additional Resources
 
