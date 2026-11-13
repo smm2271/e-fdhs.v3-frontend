@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
-import { HOME_LINK, NAV_GROUPS } from './nav.model';
+import { PageService } from '../../service/page/page';
 import { Auth } from '../../service/auth/auth';
 import type { AuthUser } from '../../service/auth/auth.model';
 import { Viewport } from '../../service/viewport/viewport';
@@ -29,6 +29,7 @@ import { Viewport } from '../../service/viewport/viewport';
 export class Nav {
   readonly auth = inject(Auth);
   private readonly router = inject(Router);
+  private readonly pages = inject(PageService);
   protected readonly isMobile = inject(Viewport).isMobile;
   protected readonly menuOpen = signal(false);
   protected readonly desktopUserOpen = signal(false);
@@ -85,7 +86,7 @@ export class Nav {
     this.closeMenu();
     this.desktopUserOpen.set(false);
     this.auth.logout();
-    void this.router.navigate(['/login'], { replaceUrl: true });
+    void this.router.navigateByUrl(this.pages.loginUrl, { replaceUrl: true });
   }
 
   protected openMenu(): void {
@@ -122,6 +123,6 @@ export class Nav {
       first?.focus();
     }
   }
-  protected readonly navStructure = NAV_GROUPS;
-  protected readonly homeLink = HOME_LINK;
+  protected readonly navStructure = this.pages.navGroups;
+  protected readonly homeLink = this.pages.homeLink;
 }

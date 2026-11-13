@@ -2,7 +2,7 @@ import { KeyValuePipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Auth } from '../../service/auth/auth';
-import { NAV_GROUPS } from '../../share/nav/nav.model';
+import { PageService } from '../../service/page/page';
 
 @Component({
   selector: 'app-home',
@@ -12,5 +12,5 @@ import { NAV_GROUPS } from '../../share/nav/nav.model';
 })
 export class Home {
   protected readonly user = inject(Auth).currentUser;
-  protected readonly groups = NAV_GROUPS;
+  protected readonly groups = inject(PageService).navGroups;
 }
